@@ -1,9 +1,12 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Resize from './components/Resize';
 import Input from './components/Input';
 import './App.css'
 import List from './components/List';
 import { Todo } from './interfaces';
+// import { useContext } from 'react';
+// import { Context } from './context/AppContext';
+import useFetch from './customHooks/useFetch';
 
 type param = 1|2|0;
 interface User {
@@ -14,9 +17,12 @@ interface User {
 
 const App = () => {
 
+  // const state = useContext();
+  const uFetch = useFetch('https://www.google.es');
   const [counter, setCounter] = useState<number>(0);
   const [show, setShow] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
+  const [myFilter, setMyFilter] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([
     {
       id: 1,
@@ -32,6 +38,8 @@ const App = () => {
     username: '',
     email: ''
   });
+
+  console.log(user);
 
   useEffect(() => {
 
@@ -72,6 +80,15 @@ const App = () => {
     setTodos(filteredArr);
   }, [todos]);
 
+  // El useMemo puede ayudarte a no volver a renderizar todos los componentes cada vez que hay un cambio
+  const computedTodos = useMemo(() =>todos.filter(items => {
+    return items.task.toLowerCase().includes(myFilter.toLowerCase());
+  }), [myFilter]);
+
+  const filterMe = () => {
+    setMyFilter(search);
+  }
+
   const setShowResize = (option: boolean): void => {
     setShow(option);
   }
@@ -100,7 +117,12 @@ const App = () => {
       <button onClick={() => changeUser()}>Change User</button>
       <button onClick={() => updateUser('name', 'Mario')}>Change User</button>
 
-      <List todos={todos} deleteItem={() => deleteItem}/>
+      <button onClick={filterMe}>Filter Me</button>
+
+      {/* <List todos={todos} deleteItem={deleteItem}/> */}
+      <List todos={computedTodos} deleteItem={deleteItem}/>
+
+      { uFetch.loading ? <>{JSON.stringify(uFetch.data)}</> : <>Loading...</> }
     </>
   )
 }

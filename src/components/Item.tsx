@@ -1,4 +1,4 @@
-import { Todo, Props } from "../interfaces";
+import { Props } from "../interfaces";
 import { useEffect } from "react";
 
 const Item = (/* item: Todo */ props: Props) => {
@@ -10,7 +10,7 @@ const Item = (/* item: Todo */ props: Props) => {
     return (
         <>
         {props.item?.task}
-        <button onClick={props.deleteItem(props.item?.id)}>Eliminar tarea</button>
+        <button onClick={() => props.deleteItem(props.item?.id)}>Eliminar tarea</button>
         </>
     )
 }

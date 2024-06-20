@@ -8,3 +8,12 @@ export interface Props {
     item?: Todo,
     deleteItem?: any
 }
+
+export interface State {
+    id: number,
+    other: string
+}
+
+export interface Provider {
+    children: JSX.Element | JSX.Element[]
+}
